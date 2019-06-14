@@ -527,7 +527,26 @@
                     collection.data('collection-free-key', freeKey + 1);
                 }
 
-                var code = $(prototype.replace(regexp, freeKey)).data('index', freeIndex);
+                var prototypeReplace = '';
+
+                if (typeof settings.prototype_name == 'number') {
+                    var prototypeParts = prototype.split(' ');
+                    var prototypePartsNew = [];
+
+                    $(prototypeParts).each(function (index, elem) {
+                        var foundIndex = elem.lastIndexOf(settings.prototype_name);
+
+                        prototypePartsNew[index] = foundIndex !== -1
+                            ? elem.substr(0, foundIndex) + freeKey.toString() + elem.substr(foundIndex + freeKey.toString().length)
+                            : elem;
+                    });
+
+                    prototypeReplace = prototypePartsNew.join(' ');
+                } else {
+                    prototypeReplace = prototype.replace(regexp, freeKey);
+                }
+
+                var code = $(prototypeReplace).data('index', freeIndex);
                 setRightPrefix(settings, code);
 
                 var elementsParent = $(settings.elements_parent_selector);
